@@ -23,8 +23,6 @@ stop:
 	@if exist $(PID) for /f %%i in ('type $(PID)') do taskkill /F /PID %%i
 	@if exist $(PID) del /Q $(PID)
 
-
-
 ## restart: Restart the server
 .PHONY: restart
 restart: stop run
@@ -41,6 +39,11 @@ clean:
 	@echo "Cleaning cache..."
 	@go clean
 
+
+.PHONY: test
+test:
+	@echo "Running tests..."
+	@docker compose --profile test -f docker-compose.test.yml up -d
 
 ## help: Show the commands
 .PHONY: help

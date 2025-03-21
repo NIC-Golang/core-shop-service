@@ -1,0 +1,12 @@
+FROM golang:1.23
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+ENV DATABASE_URL="postgres://testuser:testpass@postgres_test:5432/testdb?sslmode=disable"
+
+CMD ["go", "test", "./..."]

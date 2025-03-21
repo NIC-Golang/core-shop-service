@@ -12,3 +12,5 @@ Write-Host "clean:" -ForegroundColor Cyan -NoNewline
 Write-Host "    Clean the cache."
 Write-Host "help:" -ForegroundColor Cyan -NoNewline
 Write-Host "     Show the commands."
+Write-Host "test:" -ForegroundColor Cyan -NoNewline
+Write-Host "     Run the test container: docker compose -f docker-compose.test.yml up -d."

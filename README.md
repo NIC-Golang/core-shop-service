@@ -34,6 +34,7 @@ make stop       # Stop the server
 make restart    # Restart the server  
 make compile    # Compile the application  
 make clean      # Clean the build cache  
+make test       # Runs unit tests in docker
 ```
 
 ## Running the service:
