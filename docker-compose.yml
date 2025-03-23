@@ -1,12 +1,12 @@
 services:
   core-shop-service:
     build:
-      context: ./src/core-shop-service
+      context: .
       dockerfile: Dockerfile
     ports:
       - ${CORE_SERVICE_PORT}
     env_file:
-      - src/core-shop-service/.env
+      - ./.env
     depends_on:
       - postgres
 
