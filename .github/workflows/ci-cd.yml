@@ -20,7 +20,7 @@ jobs:
                 echo "PORT_SQL=${{ secrets.PORT_SQL }}" >> .env
             
             - name: Start database container
-              run: docker compose -f docker-compose.test.yml up -d
+              run: docker compose --profile test -f docker-compose.test.yml up -d
 
             - name: Wait for PostgreSQL to be healthy
               run: |
