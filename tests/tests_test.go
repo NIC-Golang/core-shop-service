@@ -12,7 +12,7 @@ import (
 )
 
 func setupTestDB() (*sql.DB, error) {
-	dsn := "host=postgres port=5432 user=testuser password=testpass dbname=testdb sslmode=disable"
+	dsn := "host=test_postgres port=5432 user=testuser password=testpass dbname=testdb sslmode=disable"
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
