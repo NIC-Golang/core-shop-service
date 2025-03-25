@@ -19,37 +19,16 @@ jobs:
                 echo "CORE_SERVICE_PORT=${{ secrets.CORE_SERVICE_PORT }}" >> .env
                 echo "PORT_SQL=${{ secrets.PORT_SQL }}" >> .env
             
-            - name: Start database container
-              run: docker compose --profile test -f docker-compose.test.yml up -d
-
-            - name: Wait for PostgreSQL to be healthy
-              run: |
-                echo "Waiting for PostgreSQL to be ready..."
-                until [ "$(docker inspect -f '{{.State.Health.Status}}' test_postgres)" == "healthy" ]; do
-                  echo "Waiting..."
-                  sleep 2
-                done
-                echo "PostgreSQL is ready!"
-
-            - name: Set up Go
-              uses: actions/setup-go@v4
-              with:
-                go-version: '1.23'
-
-            - name: Install dependencies
-              run: go mod tidy
-
-            - name: Run tests
-              run: go test ./tests/...
+            - name: Start test environment and run tests
+              run: docker compose --profile test up --abort-on-container-exit --exit-code-from test_runner
 
             - name: Stop and remove containers
-              run: docker compose -f docker-compose.test.yml down
+              run: docker compose down
 
     build-and-push:
         needs: build-and-test
         runs-on: ubuntu-latest
         steps:
-            
                 
             - name: Checkout repository
               uses: actions/checkout@v4

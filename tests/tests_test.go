@@ -3,8 +3,10 @@ package tests
 import (
 	"context"
 	"database/sql"
-	"log"
+	"fmt"
+	"os"
 	"testing"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
@@ -12,26 +14,11 @@ import (
 )
 
 func setupTestDB() (*sql.DB, error) {
-	dsn := "host=test_postgres port=5432 user=testuser password=testpass dbname=testdb sslmode=disable"
+	dsn := fmt.Sprintf("host=postsql port=%s user=fiveret password=%s dbname=testdb sslmode=disable", os.Getenv("PORT_SQL"), os.Getenv("POSTGRES_PASS"))
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
-
-	query := `
-	CREATE TABLE IF NOT EXISTS users (
-	    id SERIAL PRIMARY KEY,
-	    name VARCHAR(255) NOT NULL,
-	    email VARCHAR(255) UNIQUE NOT NULL,
-	    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	);`
-	_, err = db.Exec(query)
-	if err != nil {
-		log.Fatalf("error creating the table: %v", err)
-	} else {
-		log.Println("Table user created or exists")
-	}
-
 	return db, nil
 }
 
@@ -40,13 +27,13 @@ func TestInsertUser(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, db)
 	defer db.Close()
-
+	email := fmt.Sprintf("user%d@example.com", time.Now().UnixNano())
 	ctx := context.Background()
-	_, err = db.ExecContext(ctx, "INSERT INTO users (name, email) VALUES ($1, $2)", "User", "testUser@example.com")
+	_, err = db.ExecContext(ctx, "INSERT INTO users (name, email) VALUES ($1, $2)", "User", email)
 	assert.NoError(t, err)
 
 	var name string
-	err = db.QueryRowContext(ctx, "SELECT name FROM users WHERE email=$1", "testUser@example.com").Scan(&name)
+	err = db.QueryRowContext(ctx, "SELECT name FROM users WHERE email=$1", email).Scan(&name)
 	assert.NoError(t, err)
 	assert.Equal(t, "User", name)
 }

@@ -7,6 +7,6 @@ RUN go mod download
 
 COPY . .
 
-ENV DATABASE_URL="postgres://testuser:testpass@postgres_test:5432/testdb?sslmode=disable"
+#ENV DATABASE_URL="postgres://postgres:postgres@postgresql:5432/testdb?sslmode=disable"
 
 CMD ["go", "test", "./..."]
